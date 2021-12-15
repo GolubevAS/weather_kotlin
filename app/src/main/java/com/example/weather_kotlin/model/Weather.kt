@@ -2,6 +2,7 @@ package com.example.weather_kotlin.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 @Parcelize
 data class Weather(
@@ -10,11 +11,12 @@ data class Weather(
     val feelsLike : Int = 0
 ): Parcelable
 
+@Parcelize
 data class City (
     val name : String = "Москва",
     val lat : Double = 0.0,
     val lon : Double = 0.0
-)
+) : Parcelable
 
 fun getDefaultCity() = City ("Москва", 55.755826, 37.617299900000035)
 

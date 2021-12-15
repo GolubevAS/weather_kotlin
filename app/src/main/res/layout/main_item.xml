@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:textSize="20sp"
-    android:textstyle="bolt"
+
     tools:text="@tools:sample/lorem"
     android:paddingStart="8dp"
     android:layout_margin="1dp"

@@ -13,6 +13,7 @@ import com.example.weather_kotlin.model.Weather
 import com.example.weather_kotlin.viewmodel.AppState
 import com.example.weather_kotlin.viewmodel.DetailViewModel
 import com.google.android.material.snackbar.Snackbar
+import java.lang.NullPointerException
 
 class DetailFragment : Fragment() {
 
@@ -27,7 +28,6 @@ class DetailFragment : Fragment() {
     private var _binding: DetailFragmentBinding? = null
     private val binding get() = _binding!!
 
-   // private lateinit var viewModel: DetailViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,47 +40,17 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weather = arguments?.getParcelable<Weather>("WEATHER _EXTRA")
+        val weather: Weather? = arguments?.getParcelable("WEATHER _EXTRA")
 
-//
-//        viewModel = ViewModelProvider(this)
-//            .get(DetailViewModel::class.java)
-//
-//        //подписались  на изменения LiveDATA
-//        viewModel.getData().observe(viewLifecycleOwner, { state ->
-//            render(state as AppState)
-//        })
-//        //запросили новые даные
-//        viewModel.getData()
+        weather?.let {
 
-        binding.cityName.text = weather?.city?.name ?: ""
-        binding.temperature.text = weather?.temperature.toString()
+            binding.cityName.text = weather.city.name
+            binding.temperature.text = weather.temperature.toString()
+
+        }
+
 
     }
-
-//    private fun render(state : AppState) {
-//
-//        when (state) {
-//            is AppState.Success<*> -> {
-//               val weather = state.data as Weather
-//                binding.loadingContainer.visibility = View.GONE
-//                binding.cityName.text = weather.city.name
-//                binding.temperature.text = weather.temperature.toString()
-//            }
-//            is AppState.Error -> {
-//                binding.loadingContainer.visibility = View.VISIBLE
-//                Snackbar.make(binding.root, state.error.message.toString(), Snackbar.LENGTH_INDEFINITE)
-//                    .setAction("Попробовать снова") {
-//                        //запрос новых данных
-//                        viewModel.getWeather()
-//                    }.show()
-//            }
-//            is AppState.Loading ->
-//                binding.loadingContainer.visibility = View.VISIBLE
-//
-//        }
-//
-//    }
 
     override fun onDestroy() {
         super.onDestroy()

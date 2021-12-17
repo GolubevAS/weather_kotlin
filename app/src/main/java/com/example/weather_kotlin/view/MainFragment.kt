@@ -26,7 +26,9 @@ class MainFragment : Fragment() {
     private val adapter = MainAdapter()
     private var isRussian = true
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this).get(MainViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,21 +43,21 @@ class MainFragment : Fragment() {
         //создаем RecyclerView
         binding.mainRecyclerView.adapter = adapter
 
-       adapter.listener =  MainAdapter.OnItemClick { weather ->
+        adapter.listener = MainAdapter.OnItemClick { weather ->
 
-               val bundle = Bundle()
-               bundle.putParcelable("WEATHER_EXTRA", weather)
+            val bundle = Bundle().apply {
+                putParcelable("WEATHER_EXTRA", weather)
+            }
 
-               requireActivity().supportFragmentManager.beginTransaction()
-                   .replace(R.id.main_container, DetailFragment.newInstance(bundle))
-                   .addToBackStack("")
-                   .commit()
 
-       }
+            activity?.supportFragmentManager?.apply {
+                beginTransaction()
+                    .replace(R.id.main_container, DetailFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commit()
+            }
+        }
 
-        //создаем ViewModel
-        viewModel = ViewModelProvider(this)
-            .get(MainViewModel::class.java)
 
         //подписались  на изменения LiveDATA
         viewModel.getData().observe(viewLifecycleOwner, { state ->
@@ -64,7 +66,7 @@ class MainFragment : Fragment() {
         //запросили новые даные
         viewModel.getWeatherFromLocalStorageRus()
 
-        binding.mainFAB.setOnClickListener{
+        binding.mainFAB.setOnClickListener {
             isRussian = !isRussian
 
             if (isRussian) {
@@ -78,25 +80,26 @@ class MainFragment : Fragment() {
 
     }
 
-    private fun render(state : AppState) {
+    private fun render(state: AppState) {
 
         when (state) {
             is AppState.Success<*> -> {
-               val weather : List<Weather> = state.data as List<Weather>
+                val weather: List<Weather> = state.data as List<Weather>
                 adapter.setWeather(weather)
-                binding.loadingContainer.visibility = View.GONE
+                binding.loadingContainer.hide()
 
             }
             is AppState.Error -> {
-                binding.loadingContainer.visibility = View.VISIBLE
-                Snackbar.make(binding.root, state.error.message.toString(), Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Попробовать снова") {
-                        //запрос новых данных
+                binding.loadingContainer.show()
+                binding.root.showSnackBar(state.error.message.toString(),
+                    "Попробовать снова",
+                    {
+                        //Запросили новые данные
                         viewModel.getWeatherFromLocalStorageRus()
-                    }.show()
+                    })
             }
             is AppState.Loading ->
-                binding.loadingContainer.visibility = View.VISIBLE
+                binding.loadingContainer.show()
 
         }
 

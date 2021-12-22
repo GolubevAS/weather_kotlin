@@ -49,7 +49,6 @@ class MainFragment : Fragment() {
                 putParcelable("WEATHER_EXTRA", weather)
             }
 
-
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
                     .replace(R.id.main_container, DetailFragment.newInstance(bundle))

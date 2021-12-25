@@ -3,6 +3,7 @@ package com.example.weather_kotlin.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.weather_kotlin.R
 import com.example.weather_kotlin.model.Repository
 import com.example.weather_kotlin.model.RepositoryImpl
 import com.example.weather_kotlin.model.Weather

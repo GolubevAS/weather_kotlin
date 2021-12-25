@@ -91,7 +91,7 @@ class MainFragment : Fragment() {
             is AppState.Error -> {
                 binding.loadingContainer.show()
                 binding.root.showSnackBar(state.error.message.toString(),
-                    "Попробовать снова",
+                    getString(R.string.try_again),
                     {
                         //Запросили новые данные
                         viewModel.getWeatherFromLocalStorageRus()

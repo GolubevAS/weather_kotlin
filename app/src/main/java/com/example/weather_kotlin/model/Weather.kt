@@ -8,7 +8,8 @@ import kotlinx.android.parcel.RawValue
 data class Weather(
     val city : City = getDefaultCity(),
     val temperature : Int = 0,
-    val feelsLike : Int = 0
+    val feelsLike : Int = 0,
+    val description : String = ""
 ): Parcelable
 
 @Parcelize

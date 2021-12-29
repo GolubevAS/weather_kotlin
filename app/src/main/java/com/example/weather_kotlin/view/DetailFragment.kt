@@ -1,5 +1,6 @@
 package com.example.weather_kotlin.view
 
+import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -12,9 +13,7 @@ import androidx.annotation.RequiresApi
 import com.example.weather_kotlin.databinding.DetailFragmentBinding
 import com.example.weather_kotlin.viewmodel.MainViewModel
 import com.example.weather_kotlin.databinding.MainFragmentBinding
-import com.example.weather_kotlin.model.Weather
-import com.example.weather_kotlin.model.WeatherDTO
-import com.example.weather_kotlin.model.WeatherLoader
+import com.example.weather_kotlin.model.*
 import com.example.weather_kotlin.viewmodel.AppState
 import com.example.weather_kotlin.viewmodel.DetailViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -23,12 +22,23 @@ import java.lang.NullPointerException
 class DetailFragment : Fragment() {
 
     companion object {
-        fun newInstance(bundle: Bundle?) : DetailFragment {
-            val fragment =  DetailFragment()
+        fun newInstance(bundle: Bundle?): DetailFragment {
+            val fragment = DetailFragment()
             fragment.arguments = bundle
             return fragment
         }
     }
+
+    private val listener = Repository.OnLoadListener {
+            RepositoryImpl.getWeatherFromServer()?.let { weather ->
+                binding.feelsLikeValue.text = weather.feelsLike.toString()
+                binding.temperature.text = weather.temperature.toString()
+                binding.weatherDescription.text = weather.description.toString()
+            } ?: Toast.makeText(context, "Error...", Toast.LENGTH_SHORT).show()
+        }
+
+
+
 
     private var _binding: DetailFragmentBinding? = null
     private val binding get() = _binding!!
@@ -46,29 +56,17 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val weather: Weather? = arguments?.getParcelable("WEATHER_EXTRA")
+        RepositoryImpl.addLoadListener(listener)
 
+        val weather: Weather? = arguments?.getParcelable("WEATHER_EXTRA")
         weather?.let {
 
             binding.cityName.text = weather.city.name
 
-
-            WeatherLoader.load(weather.city, object : WeatherLoader.OnWeatherLoadListener {
-                override fun onLoaded(weatherDTO: WeatherDTO) {
-
-                    weatherDTO.main?.let {main ->
-                        binding.weatherDescription.text = main.description
-                        binding.temperature.text = main.toString()
-                        binding.feelsLikeValue.text = main.toString()
-                    }
-                }
-
-                override fun onFailed(throwable: Throwable) {
-                    Toast.makeText(requireContext(), throwable.message, Toast.LENGTH_SHORT).show()
-                }
-
-            })
-
+            requireActivity().startService(Intent(requireContext(), MainIntentService::class.java)
+                .apply {
+                    putExtra("WEATHER_EXTRA", weather)
+                })
 
         }
 
@@ -77,6 +75,7 @@ class DetailFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        RepositoryImpl.removeLoadListener(listener)
         _binding = null
     }
 

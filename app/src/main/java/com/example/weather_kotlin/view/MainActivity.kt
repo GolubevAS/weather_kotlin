@@ -10,6 +10,9 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import com.example.weather_kotlin.R
 import com.example.weather_kotlin.databinding.ActivityMainBinding
+import com.example.weather_kotlin.model.MainWorker
+import com.example.weather_kotlin.model.RepositoryImpl
+import com.google.gson.Gson
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -20,18 +23,22 @@ import java.util.stream.Collectors
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private  val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val json = Gson().toJson(RepositoryImpl.getWeatherFromServer())
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, MainFragment.newInstance())
             .commit()
 
+        MainWorker.startWorker(this)
     }
 }
 

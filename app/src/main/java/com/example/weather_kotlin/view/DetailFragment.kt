@@ -10,6 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import coil.load
+import coil.transform.CircleCropTransformation
+import com.example.weather_kotlin.R
 import com.example.weather_kotlin.databinding.DetailFragmentBinding
 import com.example.weather_kotlin.viewmodel.MainViewModel
 import com.example.weather_kotlin.databinding.MainFragmentBinding
@@ -34,6 +37,14 @@ class DetailFragment : Fragment() {
                 binding.feelsLikeValue.text = weather.feelsLike.toString()
                 binding.temperature.text = weather.temperature.toString()
                 binding.weatherDescription.text = weather.description.toString()
+
+                //грузим картинку с помощью coil
+                binding.weatherImage.load("https://cdn.pixabay.com/photo/2021/10/26/12/34/christmas-6743572_1280.jpg") {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_baseline_flag_24)
+                    transformations(CircleCropTransformation())
+                }
+
             } ?: Toast.makeText(context, "Error...", Toast.LENGTH_SHORT).show()
         }
 

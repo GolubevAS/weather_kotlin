@@ -9,13 +9,13 @@ data class WeatherDTO(
 )
 
 data class MainDTO(
-    val temp: Int?,
+    val temp: Double?,
     @SerializedName("feels_like")
-    val feelsLike: Int?,
+    val feelsLike: Double?,
     @SerializedName("temp_min")
-    val tempMin: Int?,
+    val tempMin: Double?,
     @SerializedName("temp_max")
-    val tempMax: Int?,
+    val tempMax: Double?,
     val pressure: Int?,
     val humidity: Int?,
 

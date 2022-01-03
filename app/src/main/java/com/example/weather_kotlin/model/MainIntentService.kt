@@ -21,7 +21,7 @@ class MainIntentService : IntentService("MainIntentService") {
         Thread.sleep(5000)
 
         intent?.getParcelableExtra<Weather>("WEATHER_EXTRA")?.let { weather ->
-            WeatherLoader.load(weather.city, object : WeatherLoader.OnWeatherLoadListener {
+            WeatherLoader.loadRetrofit(weather.city, object : WeatherLoader.OnWeatherLoadListener {
                 override fun onLoaded(weatherDTO: WeatherDTO) {
                     applicationContext.sendBroadcast(Intent(
                         applicationContext,
@@ -32,8 +32,8 @@ class MainIntentService : IntentService("MainIntentService") {
                             action = MainReceiver.WEATHER_LOAD_SUCCESS
                             putExtra(
                                 "WEATHER_EXTRA", Weather(
-                                    temperature = weatherDTO.main?.temp ?: 0,
-                                    feelsLike = weatherDTO.main?.feelsLike ?: 0,
+                                    temperature = weatherDTO.main?.temp ?: 0.00,
+                                    feelsLike = weatherDTO.main?.feelsLike ?: 0.00,
                                     description = weatherDTO.main?.description ?: "",
                                 )
                             )

@@ -32,9 +32,10 @@ class MainIntentService : IntentService("MainIntentService") {
                             action = MainReceiver.WEATHER_LOAD_SUCCESS
                             putExtra(
                                 "WEATHER_EXTRA", Weather(
-                                    temperature = weatherDTO.main?.temp ?: 0.00,
-                                    feelsLike = weatherDTO.main?.feelsLike ?: 0.00,
+                                    temperature = weatherDTO.main?.temp ?: 0.00f,
+                                    feelsLike = weatherDTO.main?.feelsLike ?: 0.00f,
                                     description = weatherDTO.main?.description ?: "",
+                                    city =  weather.city
                                 )
                             )
                         })

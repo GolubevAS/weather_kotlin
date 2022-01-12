@@ -32,7 +32,12 @@ class DetailFragment : Fragment() {
         }
     }
 
+    private val viewModel : DetailViewModel by lazy {
+        ViewModelProvider(this).get(DetailViewModel::class.java)
+    }
+
     private val listener = Repository.OnLoadListener {
+
             RepositoryImpl.getWeatherFromServer()?.let { weather ->
                 binding.feelsLikeValue.text = weather.feelsLike.toString()
                 binding.temperature.text = weather.temperature.toString()
@@ -44,6 +49,8 @@ class DetailFragment : Fragment() {
                     placeholder(R.drawable.ic_baseline_flag_24)
                     transformations(CircleCropTransformation())
                 }
+
+                viewModel.saveHistory(weather)
 
             } ?: Toast.makeText(context, "Error...", Toast.LENGTH_SHORT).show()
         }
@@ -70,9 +77,11 @@ class DetailFragment : Fragment() {
         RepositoryImpl.addLoadListener(listener)
 
         val weather: Weather? = arguments?.getParcelable("WEATHER_EXTRA")
-        weather?.let {
 
+        weather?.let {
             binding.cityName.text = weather.city.name
+            binding.temperature.text = weather.temperature.toInt().toString()
+            binding.feelsLikeValue.text = weather.feelsLike.toInt().toString()
 
             requireActivity().startService(Intent(requireContext(), MainIntentService::class.java)
                 .apply {
@@ -81,7 +90,6 @@ class DetailFragment : Fragment() {
 
         }
 
-
     }
 
     override fun onDestroy() {
@@ -89,5 +97,8 @@ class DetailFragment : Fragment() {
         RepositoryImpl.removeLoadListener(listener)
         _binding = null
     }
+
+
+
 
 }

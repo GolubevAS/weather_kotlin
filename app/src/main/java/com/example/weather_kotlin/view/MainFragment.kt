@@ -1,5 +1,6 @@
 package com.example.weather_kotlin.view
 
+import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -75,6 +76,12 @@ class MainFragment : Fragment() {
                 viewModel.getWeatherFromLocalStorageWorld()
                 binding.mainFAB.setImageResource(R.drawable.ic_baseline_flag_24)
             }
+        }
+
+        binding.historyFAB.setOnClickListener {
+          requireContext().startActivity(Intent(requireContext(), HistoryActivity::class.java))
+
+
         }
 
     }

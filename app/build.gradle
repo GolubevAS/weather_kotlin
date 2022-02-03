@@ -23,8 +23,40 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "TYPE", '"RELEASE"'
+        }
+        debug {
+            versionNameSuffix "-debug"
+            buildConfigField "String", "TYPE", '"DEBUG"'
+        }
+        staging {
+            initWith debug
+            versionNameSuffix "-beta"
+            buildConfigField "String", "TYPE", '"STAGING"'
         }
     }
+
+    flavorDimensions 'version', 'platform'
+
+    productFlavors {
+        free {
+            dimension 'version'
+            applicationId "com.example.weather_kotlin.free"
+        }
+        paid {
+            dimension 'version'
+            applicationId "com.example.weather_kotlin.paid"
+        }
+        google {
+            dimension 'platform'
+
+        }
+        huawei {
+            dimension 'platform'
+
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
